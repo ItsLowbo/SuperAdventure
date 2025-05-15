@@ -34,6 +34,7 @@ namespace SuperAdventure
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
             lblLevel.Text = _player.Level.ToString();
+            lblMana.Text = _player.ManaMax.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
             UpdateWeaponListInUI();
@@ -92,8 +93,12 @@ namespace SuperAdventure
                 _player.MaximumHitPoints += maxHPInc;
                 _player.CurrentHitPoints += maxHPInc;
                 SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
-                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 5));
+                int maxManaInc = RNG.RandomNumberBetween(4, 8);
+                _player.ManaMax += maxManaInc;
+                _player.ManaCurrent += maxManaInc;
+                SendMessage(string.Format("You gain {0} Maximum Mana!", maxManaInc));
                 CheckForLearnSpell();
+                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 5));
                 UpdateUI();
 
             }
@@ -436,6 +441,11 @@ namespace SuperAdventure
         }
 
         private void cboPotions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
         {
 
         }

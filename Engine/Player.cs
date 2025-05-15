@@ -14,19 +14,25 @@ namespace Engine
         public int ExperiencePoints { get; set; }
         public int Level { get; set; }
 
+        public int ManaMax { get; set; }
+
+        public int ManaCurrent { get; set; }
+
         public List<InventoryItem> Inventory {  get; set; }
 
         public List<PlayerQuest> Quests { get; set; }
 
         public Location CurrentLocation {  get; set; }
 
-        public Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints, int level) : base(currentHitPoints, maximumHitPoints)
+        public Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints, int level, int manaMax = 0, int manaCurrent = 0) : base(currentHitPoints, maximumHitPoints)
         {
             Gold = gold;
             ExperiencePoints = experiencePoints;
             Level = level;
             Inventory = new List<InventoryItem>();
             Quests = new List<PlayerQuest>();
+            ManaMax = manaMax;
+            ManaCurrent = manaCurrent;
         }
         public bool PlayerCanEnterLocation(Location location)
         {

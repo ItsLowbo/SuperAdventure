@@ -49,6 +49,8 @@
             this.rtbMessages = new System.Windows.Forms.RichTextBox();
             this.dgvInentory = new System.Windows.Forms.DataGridView();
             this.dgvQuests = new System.Windows.Forms.DataGridView();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblMana = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInentory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
             this.SuspendLayout();
@@ -266,11 +268,31 @@
             this.dgvQuests.Size = new System.Drawing.Size(624, 189);
             this.dgvQuests.TabIndex = 20;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(264, 19);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 20);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Mana:";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // lblMana
+            // 
+            this.lblMana.AutoSize = true;
+            this.lblMana.Location = new System.Drawing.Point(324, 19);
+            this.lblMana.Name = "lblMana";
+            this.lblMana.Size = new System.Drawing.Size(0, 20);
+            this.lblMana.TabIndex = 22;
+            // 
             // SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1448, 634);
+            this.Controls.Add(this.lblMana);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.dgvQuests);
             this.Controls.Add(this.dgvInentory);
             this.Controls.Add(this.rtbMessages);
@@ -325,6 +347,8 @@
         private System.Windows.Forms.RichTextBox rtbMessages;
         private System.Windows.Forms.DataGridView dgvInentory;
         private System.Windows.Forms.DataGridView dgvQuests;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblMana;
     }
 }
 
