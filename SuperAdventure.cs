@@ -34,7 +34,7 @@ namespace SuperAdventure
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
             lblLevel.Text = _player.Level.ToString();
-            lblMana.Text = _player.ManaMax.ToString();
+            lblMana.Text = _player.ManaCurrent.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
             UpdateWeaponListInUI();
@@ -130,9 +130,28 @@ namespace SuperAdventure
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
             Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem;
-            int damageToDeal = RNG.RandomNumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
-            _currentMonster.CurrentHitPoints -= damageToDeal;
-            SendMessage(string.Format("You deal {0} damage to {1}!", damageToDeal, _currentMonster.Name));
+            bool attackSucccess = true;
+            Spell currentSpell = currentWeapon as Spell;
+            if (currentSpell != null)
+            {
+                if (_player.ManaCurrent >= currentSpell.ManaCost)
+                {
+                    _player.ManaCurrent -= currentSpell.ManaCost;
+                    SendMessage(string.Format("You cast {0} for {1} Mana!", currentSpell.Name, currentSpell.ManaCost));
+                }
+                else
+                {
+                    attackSucccess = false;
+                    SendMessage(string.Format("You attempt to cast {0}, but it fizzles!", currentSpell.Name));
+                    _player.ManaCurrent = 0;
+                }
+            }
+            if (attackSucccess)
+            {
+                int damageToDeal = RNG.RandomNumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
+                _currentMonster.CurrentHitPoints -= damageToDeal;
+                SendMessage(string.Format("You deal {0} damage to {1}!", damageToDeal, _currentMonster.Name));
+            }
             if (_currentMonster.CurrentHitPoints <= 0)
             {
                 SendMessage(string.Format("You have defeated {0}!", _currentMonster.Name));
@@ -152,7 +171,7 @@ namespace SuperAdventure
                 }
                 CheckForLevelUp();
 
-                UpdateUI();
+                
 
                 MoveTo(_player.CurrentLocation);
             }
@@ -160,6 +179,7 @@ namespace SuperAdventure
             {
                 MonsterAttack();
             }
+            UpdateUI();
 
         }
 
@@ -211,6 +231,7 @@ namespace SuperAdventure
             }
 
             // Update player's current location
+            bool sameLocation = _player.CurrentLocation == newLocation;
             _player.CurrentLocation = newLocation;
 
             // Show/hide available movement buttons
@@ -223,8 +244,12 @@ namespace SuperAdventure
             rtbLocation.Text = newLocation.Name + Environment.NewLine;
             rtbLocation.Text += newLocation.Description + Environment.NewLine;
 
-            //Completely heal the player
-            _player.CurrentHitPoints = _player.MaximumHitPoints;
+            //Completely heal the player, if they haven't moved to the same location
+            if (!sameLocation)
+            {
+                _player.CurrentHitPoints = _player.MaximumHitPoints;
+                _player.ManaCurrent = _player.ManaMax;
+            }
 
             // Does the location have a quest?
             if (newLocation.QuestAvailableHere != null)
