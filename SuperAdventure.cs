@@ -1,5 +1,4 @@
-﻿using Engine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +8,8 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using Engine;
 
 namespace SuperAdventure
 {
@@ -92,8 +93,27 @@ namespace SuperAdventure
                 _player.CurrentHitPoints += maxHPInc;
                 SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
                 SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 3));
+                CheckForLearnSpell();
                 UpdateUI();
 
+            }
+        }
+
+        public void CheckForLearnSpell()
+        {
+            foreach (Item item in World.Items)
+            {
+                Spell spell = item as Spell;
+                if (spell != null)
+                {
+                    if (_player.Level >= spell.LevelRequirement && !spell.Learned)
+                    {
+                        _player.AddItemToInventory(World.ItemByID(spell.ID), 1);
+                        SendMessage(string.Format("You have learned the spell {0}!", spell.Name));
+                        spell.Learned = true;
+                    }
+                }
+                
             }
         }
 

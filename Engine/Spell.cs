@@ -10,10 +10,13 @@ namespace Engine
     {
         public int ManaCost;
         public int LevelRequirement;
+        public bool Learned;
         public Spell(int minimumDamage, int maximumDamage, int id, string name, string namePlural, int manaCost, int levelRequirement, bool learned = false) : base(minimumDamage, maximumDamage, id, name, namePlural)
         {
             ManaCost = manaCost;
             LevelRequirement = levelRequirement;
+            Learned = learned;
+
         }
     }
 }
