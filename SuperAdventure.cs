@@ -92,7 +92,7 @@ namespace SuperAdventure
                 _player.MaximumHitPoints += maxHPInc;
                 _player.CurrentHitPoints += maxHPInc;
                 SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
-                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 3));
+                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 5));
                 CheckForLearnSpell();
                 UpdateUI();
 
