@@ -26,6 +26,7 @@ namespace Engine
         public const int ITEM_ID_FIRE = 11;
         public const int ITEM_ID_FIRA = 12;
         public const int ITEM_ID_FIRAGA = 13;
+        public const int ITEM_ID_MANA_POTION = 14;
 
         public const int MONSTER_ID_RAT = 1;
         public const int MONSTER_ID_SNAKE = 2;
@@ -67,6 +68,7 @@ namespace Engine
             Items.Add(new Spell(2, 8, ITEM_ID_FIRE, "Fire", "Fires", 5, 2));
             Items.Add(new Spell(4, 12, ITEM_ID_FIRA, "Fira", "Firas", 8, 4));
             Items.Add(new Spell(6, 16, ITEM_ID_FIRAGA, "Firaga", "Firagas", 11, 6));
+            Items.Add(new ManaPotion(ITEM_ID_MANA_POTION, "Mana Potion", "Mana Potions", 10));
         }
 
         private static void PopulateMonsters()
@@ -75,16 +77,19 @@ namespace Engine
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_RAT_TAIL), 75, false));
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 75, true));
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_HEALING_POTION), 25, false));
+            rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_MANA_POTION), 25, false));
 
             Monster snake = new Monster(MONSTER_ID_SNAKE, "Snake", 5, 3, 10, 3, 3);
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKE_FANG), 75, false));
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 75, true));
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_HEALING_POTION), 25, false));
+            snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_MANA_POTION), 25, false));
 
             Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "Giant spider", 20, 5, 40, 10, 10);
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_FANG), 75, true));
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_SILK), 25, false));
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_HEALING_POTION), 25, false));
+            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_MANA_POTION), 25, false));
 
             Monsters.Add(rat);
             Monsters.Add(snake);

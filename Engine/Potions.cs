@@ -16,4 +16,12 @@ namespace Engine
         }
 
     }
+
+    public class ManaPotion : Item
+    {
+        public int AmountToRestore { get; set; }
+
+        public ManaPotion(int id, string name, string namePlural, int amountToRestore) : base(id, name, namePlural)
+        { AmountToRestore = amountToRestore; }
+    }
 }

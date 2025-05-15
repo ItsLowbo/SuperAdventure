@@ -202,21 +202,34 @@ namespace SuperAdventure
         }
         private void btnUsePotion_Click(object sender, EventArgs e)
         {
-            HealingPotion currentPotion = (HealingPotion)cboPotions.SelectedItem;
-            int amountToHeal = currentPotion.AmountToHeal;
-            int playerMissingHealth = _player.MaximumHitPoints - _player.CurrentHitPoints;
-            amountToHeal = Math.Min(amountToHeal, playerMissingHealth);
-            _player.CurrentHitPoints += amountToHeal;
-            SendMessage(string.Format("You quaff a healing potion! You healed for {0} health!", amountToHeal));
-            foreach (InventoryItem inventoryItem in _player.Inventory)
+            Item currentPotion = (Item)cboPotions.SelectedItem;
+            HealingPotion healingPotion = currentPotion as HealingPotion;
+            ManaPotion manaPotion = currentPotion as ManaPotion;
+            if (healingPotion != null)
             {
-                if (inventoryItem.Details.ID == currentPotion.ID)
-                {
-                    inventoryItem.Quantity -= 1;
-                    SendMessage(string.Format("You have {0} Healing Potions remaining.", inventoryItem.Quantity));
-                    break;
-                }
+                int amountToHeal = healingPotion.AmountToHeal;
+                int playerMissingHealth = _player.MaximumHitPoints - _player.CurrentHitPoints;
+                amountToHeal = Math.Min(amountToHeal, playerMissingHealth);
+                _player.CurrentHitPoints += amountToHeal;
+                SendMessage(string.Format("You quaff a healing potion! You healed for {0} Health!", amountToHeal));
             }
+            else if (manaPotion != null)
+            {
+                int amountToRestore = manaPotion.AmountToRestore;
+                int playerMissingMana = _player.ManaMax - _player.ManaCurrent;
+                amountToRestore = Math.Min(amountToRestore, playerMissingMana);
+                _player.ManaCurrent += amountToRestore;
+                SendMessage(string.Format("You quaff a mana potion! You restore {0} Mana!", amountToRestore));
+            }
+                foreach (InventoryItem inventoryItem in _player.Inventory)
+                {
+                    if (inventoryItem.Details.ID == currentPotion.ID)
+                    {
+                        inventoryItem.Quantity -= 1;
+                        SendMessage(string.Format("You have {0} Potions remaining.", inventoryItem.Quantity));
+                        break;
+                    }
+                }
             UpdateUI();
             MonsterAttack();
 
@@ -429,7 +442,7 @@ namespace SuperAdventure
         }
         private void UpdatePotionListInUI()
         {
-            List<HealingPotion> potions = new List<HealingPotion>();
+            List<Item> potions = new List<Item>();
             foreach (InventoryItem inventoryItem in _player.Inventory)
             {
                 if (inventoryItem.Details is HealingPotion)
@@ -437,6 +450,13 @@ namespace SuperAdventure
                     if (inventoryItem.Quantity > 0)
                     {
                         potions.Add((HealingPotion)inventoryItem.Details);
+                    }
+                }
+                else if (inventoryItem.Details is ManaPotion)
+                {
+                    if (inventoryItem.Quantity > 0)
+                    {
+                        potions.Add((ManaPotion)inventoryItem.Details);
                     }
                 }
             }
