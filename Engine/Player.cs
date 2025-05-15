@@ -84,7 +84,7 @@ namespace Engine
                 {
                     if (inventoryItem.Details.ID == completionItem.Details.ID)
                     {
-                        if (inventoryItem.Quantity == completionItem.Quantity)
+                        if (inventoryItem.Quantity >= completionItem.Quantity)
                         {
                             return true;
                         }
