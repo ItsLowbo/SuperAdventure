@@ -23,6 +23,9 @@ namespace Engine
         public const int ITEM_ID_SPIDER_FANG = 8;
         public const int ITEM_ID_SPIDER_SILK = 9;
         public const int ITEM_ID_ADVENTURER_PASS = 10;
+        public const int ITEM_ID_FIRE = 11;
+        public const int ITEM_ID_FIRA = 12;
+        public const int ITEM_ID_FIRAGA = 13;
 
         public const int MONSTER_ID_RAT = 1;
         public const int MONSTER_ID_SNAKE = 2;
@@ -61,6 +64,9 @@ namespace Engine
             Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs"));
             Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks"));
             Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes"));
+            Items.Add(new Spell(2, 8, ITEM_ID_FIRE, "Fire", "Fires", 5, 2));
+            Items.Add(new Spell(4, 12, ITEM_ID_FIRA, "Fira", "Firas", 8, 4));
+            Items.Add(new Spell(6, 16, ITEM_ID_FIRAGA, "Firaga", "Firagas", 11, 6));
         }
 
         private static void PopulateMonsters()
