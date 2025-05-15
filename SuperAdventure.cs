@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -78,7 +79,25 @@ namespace SuperAdventure
             MoveTo(_player.CurrentLocation.LocationToSouth);
         }
 
-        private void SendMessage(string message)
+        public void CheckForLevelUp()
+        {
+            int expForNextLevel = _player.Level * 5;
+            if (_player.ExperiencePoints > expForNextLevel)
+            {
+                _player.Level += 1;
+                _player.ExperiencePoints -= expForNextLevel;
+                SendMessage(string.Format("Level Up! You are now level {0}", _player.Level));
+                int maxHPInc = RNG.RandomNumberBetween(2, 4);
+                _player.MaximumHitPoints += maxHPInc;
+                _player.CurrentHitPoints += maxHPInc;
+                SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
+                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 3));
+                UpdateUI();
+
+            }
+        }
+
+        public void SendMessage(string message)
         {
             rtbMessages.Text += message + "\n";
         }
@@ -106,6 +125,7 @@ namespace SuperAdventure
                     }
 
                 }
+                CheckForLevelUp();
 
                 UpdateUI();
 
@@ -215,6 +235,7 @@ namespace SuperAdventure
                             _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem, 1);
 
                             _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
+                            CheckForLevelUp();
 
                         }
                         else
