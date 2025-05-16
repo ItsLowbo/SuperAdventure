@@ -125,6 +125,7 @@ namespace SuperAdventure
         public void SendMessage(string message)
         {
             rtbMessages.Text += message + "\n";
+            ScrollToBottomOfMessages();
         }
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
@@ -413,6 +414,11 @@ namespace SuperAdventure
             }
         }
 
+        private void ScrollToBottomOfMessages()
+        {
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
+        }
         private void UpdateWeaponListInUI()
         {
             List<Weapon> weapons = new List<Weapon>();
