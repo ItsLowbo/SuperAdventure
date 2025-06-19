@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -24,6 +25,7 @@ namespace SuperAdventure
             _player = new Player(10, 10, 20, 0, 1);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             _player.AddItemToInventory(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1);
+            _player.PlayerLevelUp += OnLevelUp;
 
             UpdateUI();
         }
@@ -81,45 +83,17 @@ namespace SuperAdventure
             MoveTo(_player.CurrentLocation.LocationToSouth);
         }
 
-        public void CheckForLevelUp()
+        public void OnLevelUp(int newLevel, int maxHPInc, int maxManaInc, int newEXPForNextLevel, string learnedSpellName)
         {
-            int expForNextLevel = _player.Level * 5;
-            if (_player.ExperiencePoints > expForNextLevel)
+            SendMessage(string.Format("Level Up! You are now level {0}", newLevel));
+            SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
+            SendMessage(string.Format("You gain {0} Maximum Mana!", maxManaInc));
+            if (!string.IsNullOrEmpty(learnedSpellName))
             {
-                _player.Level += 1;
-                _player.ExperiencePoints -= expForNextLevel;
-                SendMessage(string.Format("Level Up! You are now level {0}", _player.Level));
-                int maxHPInc = RNG.RandomNumberBetween(2, 4);
-                _player.MaximumHitPoints += maxHPInc;
-                _player.CurrentHitPoints += maxHPInc;
-                SendMessage(string.Format("You gain {0} Maximum HP!", maxHPInc));
-                int maxManaInc = RNG.RandomNumberBetween(4, 8);
-                _player.ManaMax += maxManaInc;
-                _player.ManaCurrent += maxManaInc;
-                SendMessage(string.Format("You gain {0} Maximum Mana!", maxManaInc));
-                CheckForLearnSpell();
-                SendMessage(string.Format("Gain {0} EXP to level up again.", _player.Level * 5));
-                UpdateUI();
-
+                SendMessage(string.Format("You have learned the spell {0}!", learnedSpellName));
             }
-        }
-
-        public void CheckForLearnSpell()
-        {
-            foreach (Item item in World.Items)
-            {
-                Spell spell = item as Spell;
-                if (spell != null)
-                {
-                    if (_player.Level >= spell.LevelRequirement && !spell.Learned)
-                    {
-                        _player.AddItemToInventory(World.ItemByID(spell.ID), 1);
-                        SendMessage(string.Format("You have learned the spell {0}!", spell.Name));
-                        spell.Learned = true;
-                    }
-                }
-                
-            }
+            SendMessage(string.Format("Gain {0} EXP to level up again.", newEXPForNextLevel));
+            UpdateUI();
         }
 
         public void SendMessage(string message)
@@ -156,8 +130,6 @@ namespace SuperAdventure
             if (_currentMonster.CurrentHitPoints <= 0)
             {
                 SendMessage(string.Format("You have defeated {0}!", _currentMonster.Name));
-                _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
-                SendMessage(string.Format("You gain {0} Experience Points!", _currentMonster.RewardExperiencePoints));
                 _player.Gold += _currentMonster.RewardGold;
                 SendMessage(string.Format("You gain {0} Gold!", _currentMonster.RewardGold));
                 foreach (LootItem lootItem in _currentMonster.LootTable)
@@ -170,10 +142,8 @@ namespace SuperAdventure
                     }
 
                 }
-                CheckForLevelUp();
-
-                
-
+                SendMessage(string.Format("You gain {0} Experience Points!", _currentMonster.RewardExperiencePoints));
+                _player.AddExperiencePoints(_currentMonster.RewardExperiencePoints);
                 MoveTo(_player.CurrentLocation);
             }
             else
@@ -291,15 +261,14 @@ namespace SuperAdventure
                             SendMessage(string.Format("{0}!", newLocation.QuestAvailableHere.RewardItem.Name));
                             rtbMessages.Text += Environment.NewLine;
 
-                            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
+
                             _player.Gold += newLocation.QuestAvailableHere.RewardGold;
 
                             //Add reward item to player's inventory
 
                             _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem, 1);
-
                             _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
-                            CheckForLevelUp();
+                            _player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
 
                         }
                         else

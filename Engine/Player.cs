@@ -13,6 +13,7 @@ namespace Engine
         public int Gold {  get; set; }
         public int ExperiencePoints { get; set; }
         public int Level { get; set; }
+        public int ExpForNextLevel { get; set; }
 
         public int ManaMax { get; set; }
 
@@ -24,11 +25,16 @@ namespace Engine
 
         public Location CurrentLocation {  get; set; }
 
+        public delegate void LevelUpHandler(int newLevel, int maxHPInc, int maxManaInc, int newExpForNextLevel, string learnedSpellName);
+
+        public event LevelUpHandler PlayerLevelUp;
+
         public Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints, int level, int manaMax = 0, int manaCurrent = 0) : base(currentHitPoints, maximumHitPoints)
         {
             Gold = gold;
             ExperiencePoints = experiencePoints;
             Level = level;
+            ExpForNextLevel = level * 5;
             Inventory = new List<InventoryItem>();
             Quests = new List<PlayerQuest>();
             ManaMax = manaMax;
@@ -96,6 +102,38 @@ namespace Engine
             Inventory.Add(new InventoryItem(itemToAdd, quantity));
         }
 
+
+        public void AddExperiencePoints(int exptoadd)
+        {
+            ExperiencePoints += exptoadd;
+            if (ExperiencePoints >= ExpForNextLevel)
+            {
+                Level += 1;
+                ExperiencePoints -= ExpForNextLevel;
+                ExpForNextLevel = Level * 5;
+                int maxHPInc = RNG.RandomNumberBetween(2, 4);
+                MaximumHitPoints += maxHPInc;
+                CurrentHitPoints += maxHPInc;
+                int maxManaInc = RNG.RandomNumberBetween(4, 8);
+                ManaMax += maxManaInc;
+                ManaCurrent += maxManaInc;
+                string newSpellName = null;
+                foreach (Item item in World.Items)
+                {
+                    Spell spell = item as Spell;
+                    if (spell != null)
+                    {
+                        if (Level >= spell.LevelRequirement && !spell.Learned)
+                        {
+                            AddItemToInventory(World.ItemByID(spell.ID), 1);
+                            spell.Learned = true;
+                            newSpellName = spell.Name;
+                        }
+                    }
+                }
+                PlayerLevelUp.Invoke(Level, maxHPInc, maxManaInc, ExpForNextLevel, newSpellName);
+            }
+        }
 
 
         public void MarkQuestCompleted(Quest quest)
