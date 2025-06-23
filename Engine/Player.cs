@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Engine
 {
@@ -29,7 +32,7 @@ namespace Engine
 
         public event LevelUpHandler PlayerLevelUp;
 
-        public Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints, int level, int manaMax = 0, int manaCurrent = 0) : base(currentHitPoints, maximumHitPoints)
+        private Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints, int level, int manaMax, int manaCurrent) : base(currentHitPoints, maximumHitPoints)
         {
             Gold = gold;
             ExperiencePoints = experiencePoints;
@@ -39,6 +42,68 @@ namespace Engine
             Quests = new List<PlayerQuest>();
             ManaMax = manaMax;
             ManaCurrent = manaCurrent;
+        }
+
+        public static Player CreateDefaultPlayer()
+        {
+            Player player = new Player(10, 10, 0, 0, 1, 0, 0);
+            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
+            return player;
+        }
+
+        public static Player CreatePlayerFromXmlString(string xmlPlayerData)
+        {
+            try
+            {
+                XmlDocument playerData = new XmlDocument();              
+                playerData.LoadXml(xmlPlayerData);
+
+                //Stats
+                int currentHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentHitPoints").InnerText);
+                int maximumHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumHitPoints").InnerText);
+                int gold = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/Gold").InnerText);
+                int experiencePoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/ExperiencePoints").InnerText);
+                int level = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/Level").InnerText);
+                int expForNextLevel = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/ExpForNextLevel").InnerText);
+                int manaMax = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumMana").InnerText);
+                int manaCurrent = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentMana").InnerText);
+
+                Player player = new Player(currentHitPoints, maximumHitPoints, gold, experiencePoints, level, manaMax, manaCurrent);
+
+                player.ExpForNextLevel = expForNextLevel;
+
+                int currentLocationID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentLocationID").InnerText);
+
+                player.CurrentLocation = World.LocationByID(currentLocationID);
+
+                foreach (XmlNode node in playerData.SelectNodes("/Player/InventoryItems/InventoryItem"))
+                {
+                    int id = Convert.ToInt32(node.Attributes["ID"].Value);
+                    int quantity = Convert.ToInt32(node.Attributes["Quantity"].Value);
+
+                    player.AddItemToInventory(World.ItemByID(id), quantity);
+                }
+
+                foreach (XmlNode node in playerData.SelectNodes("/Player/PlayerQuests/PlayerQuest"))
+                {
+                    int id = Convert.ToInt32(node.Attributes["ID"].Value);
+                    bool completed = Convert.ToBoolean(node.Attributes["Completed"].Value);
+
+                    PlayerQuest playerQuest = new PlayerQuest(World.QuestByID(id));
+                    playerQuest.IsCompleted = completed;
+                    player.Quests.Add(playerQuest);
+                }
+
+                return player;
+
+            }
+
+            catch
+            {
+                // If there was an error with the XML data, return a default player
+                return Player.CreateDefaultPlayer();
+            }
         }
         public bool PlayerCanEnterLocation(Location location)
         {
@@ -144,6 +209,94 @@ namespace Engine
                 playerQuest.IsCompleted = true;
                 return;
             }
+        }
+
+        public string ToXMLString()
+        {
+            XmlDocument playerData = new XmlDocument();
+            XmlNode player = playerData.CreateElement("Player");
+            playerData.AppendChild(player);
+
+            // Stats
+            XmlNode stats = playerData.CreateElement("Stats");
+            player.AppendChild(stats);
+
+
+            XmlNode currentHitPoints = playerData.CreateElement("CurrentHitPoints");
+            currentHitPoints.AppendChild(playerData.CreateTextNode(this.CurrentHitPoints.ToString())); 
+            stats.AppendChild(currentHitPoints);
+
+            XmlNode maximumHitPoints = playerData.CreateElement("MaximumHitPoints");
+            maximumHitPoints.AppendChild(playerData.CreateTextNode(this.MaximumHitPoints.ToString()));
+            stats.AppendChild(maximumHitPoints);
+
+            XmlNode currentMana = playerData.CreateElement("CurrentMana");
+            currentMana.AppendChild(playerData.CreateTextNode(this.ManaCurrent.ToString()));
+            stats.AppendChild(currentMana);
+
+            XmlNode maximumMana = playerData.CreateElement("MaximumMana");
+            maximumMana.AppendChild(playerData.CreateTextNode(this.ManaMax.ToString()));
+            stats.AppendChild(maximumMana);
+
+            XmlNode level = playerData.CreateElement("Level");
+            level.AppendChild(playerData.CreateTextNode(this.Level.ToString()));
+            stats.AppendChild(level);
+
+            XmlNode expForNextLevel = playerData.CreateElement("ExpForNextLevel");
+            expForNextLevel.AppendChild(playerData.CreateTextNode(this.ExpForNextLevel.ToString()));
+            stats.AppendChild(expForNextLevel);
+
+            XmlNode gold = playerData.CreateElement("Gold");
+            gold.AppendChild(playerData.CreateTextNode(this.Gold.ToString()));
+            stats.AppendChild(gold);
+
+            XmlNode experiencePoints = playerData.CreateElement("ExperiencePoints");
+            experiencePoints.AppendChild(playerData.CreateTextNode(this.ExperiencePoints.ToString()));
+            stats.AppendChild(experiencePoints);
+
+            XmlNode currentLocation = playerData.CreateElement("CurrentLocationID");
+            currentLocation.AppendChild(playerData.CreateTextNode(this.CurrentLocation.ID.ToString()));
+            stats.AppendChild(currentLocation);
+
+            //Inventory Items
+            XmlNode inventoryItems = playerData.CreateElement("InventoryItems");
+            player.AppendChild(inventoryItems);
+
+            foreach(InventoryItem item in this.Inventory)
+            {
+                XmlNode inventoryItem = playerData.CreateElement("InventoryItem");
+
+                XmlAttribute idAttribute = playerData.CreateAttribute("ID");
+                idAttribute.Value = item.Details.ID.ToString();
+                inventoryItem.Attributes.Append(idAttribute);
+
+                XmlAttribute quantityAttribute = playerData.CreateAttribute("Quantity");
+                quantityAttribute.Value = item.Quantity.ToString();
+                inventoryItem.Attributes.Append(quantityAttribute);
+                inventoryItems.AppendChild(inventoryItem);
+            }
+
+            // Quests
+            XmlNode playerQuests = playerData.CreateElement("Quests");
+            player.AppendChild(playerQuests);
+
+            foreach (PlayerQuest quest in this.Quests)
+            {
+                XmlNode playerQuest = playerData.CreateElement("Quest");
+
+                XmlAttribute idAttribute = playerData.CreateAttribute("ID");
+                idAttribute.Value = quest.Details.ID.ToString();
+                playerQuest.Attributes.Append(idAttribute);
+
+                XmlAttribute completedAttribute = playerData.CreateAttribute("Completed");
+                completedAttribute.Value = quest.IsCompleted.ToString();
+                playerQuest.Attributes.Append(completedAttribute);
+
+                playerQuests.AppendChild(playerQuest);
+
+            }
+
+            return playerData.InnerXml;
         }
     }
     

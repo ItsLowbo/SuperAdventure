@@ -11,20 +11,29 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Engine;
+using System.IO;
 
 namespace SuperAdventure
 {
     public partial class SuperAdventure : Form
     {
         private Player _player;
+        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
         private Monster _currentMonster;
         public SuperAdventure()
         {
             InitializeComponent();
+            if(File.Exists(PLAYER_DATA_FILE_NAME))
+            {
+                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            }
+            else
+            {
+                _player = Player.CreateDefaultPlayer();
+            }
 
-            _player = new Player(10, 10, 20, 0, 1);
-            MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
-            _player.AddItemToInventory(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1);
+            MoveTo(_player.CurrentLocation);
+
             _player.PlayerLevelUp += OnLevelUp;
 
             UpdateUI();
@@ -468,6 +477,11 @@ namespace SuperAdventure
         private void label5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXMLString());
         }
     }
 }
