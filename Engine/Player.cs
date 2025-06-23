@@ -12,15 +12,52 @@ namespace Engine
     public class Player : LivingCreature
     {
      
+        private int _gold;
+        public int Gold 
+        { 
+            get { return _gold; }
+            set 
+            {
+                _gold = value;
+                OnPropertyChanged("Gold");
+            }
+        }
+        private int _experiencePoints;
+        public int ExperiencePoints 
+        {
+            get { return _experiencePoints; }
+            private set
+            {
+                _experiencePoints = value;
+                OnPropertyChanged("ExperiencePoints");
+            }
+        }
 
-        public int Gold {  get; set; }
-        public int ExperiencePoints { get; private set; }
-        public int Level { get; private set; }
+        private int _level;
+        public int Level 
+        {
+            get { return _level; } 
+            private set
+            {
+                _level = value;
+                OnPropertyChanged("Level");
+            }
+
+        }
         public int ExpForNextLevel { get; private set; }
 
         public int ManaMax { get; private set; }
 
-        public int ManaCurrent { get; set; }
+        private int _manaCurrent;
+        public int ManaCurrent 
+        {
+            get { return _manaCurrent; }
+            set
+            {
+                _manaCurrent = value;
+                OnPropertyChanged("ManaCurrent");
+            }
+        }
 
         public List<InventoryItem> Inventory {  get; set; }
 

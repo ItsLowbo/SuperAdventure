@@ -34,18 +34,24 @@ namespace SuperAdventure
 
             MoveTo(_player.CurrentLocation);
 
-            _player.PlayerLevelUp += OnLevelUp;
+            HandleUIDataSubscriptions();
 
             UpdateUI();
         }
 
+        private void HandleUIDataSubscriptions()
+        {
+            lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
+            lblGold.DataBindings.Add("Text", _player, "Gold");
+            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
+            lblLevel.DataBindings.Add("Text", _player, "Level");
+            lblMana.DataBindings.Add("Text", _player, "ManaCurrent");
+            _player.PlayerLevelUp += OnLevelUp;
+
+        }
+
         private void UpdateUI()
         {
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-            lblGold.Text = _player.Gold.ToString();
-            lblExperience.Text = _player.ExperiencePoints.ToString();
-            lblLevel.Text = _player.Level.ToString();
-            lblMana.Text = _player.ManaCurrent.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
             UpdateWeaponListInUI();
