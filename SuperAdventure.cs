@@ -412,7 +412,7 @@ namespace SuperAdventure
                 }
             }
         } */
-        private void UpdateQuestListInUI()
+        /* private void UpdateQuestListInUI()
         {
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.ColumnCount = 2;
@@ -425,7 +425,7 @@ namespace SuperAdventure
                 dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
 
             }
-        }
+        } */
 
         private void ScrollToBottomOfMessages()
         {
