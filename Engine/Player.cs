@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.ComponentModel;
 
 namespace Engine
 {
@@ -59,9 +60,9 @@ namespace Engine
             }
         }
 
-        public List<InventoryItem> Inventory {  get; set; }
+        public BindingList<InventoryItem> Inventory {  get; set; }
 
-        public List<PlayerQuest> Quests { get; set; }
+        public BindingList<PlayerQuest> Quests { get; set; }
 
         public Location CurrentLocation {  get; set; }
 
@@ -77,8 +78,8 @@ namespace Engine
             ExperiencePoints = experiencePoints;
             Level = level;
             ExpForNextLevel = level * 5;
-            Inventory = new List<InventoryItem>();
-            Quests = new List<PlayerQuest>();
+            Inventory = new BindingList<InventoryItem>();
+            Quests = new BindingList<PlayerQuest>();
             ManaMax = manaMax;
             ManaCurrent = manaCurrent;
         }
@@ -157,13 +158,13 @@ namespace Engine
                 return true;
             }
 
-            return Inventory.Exists(i => i.Details.ID == location.ItemRequiredToEnter.ID);
+            return Inventory.Any(i => i.Details.ID == location.ItemRequiredToEnter.ID);
 
         }
 
         public bool HasQuest(Quest quest)
         {
-            return Quests.Exists(q => q.Details.ID == quest.ID);
+            return Quests.Any(q => q.Details.ID == quest.ID);
         }
 
         public bool QuestCompleted(Quest quest)
@@ -182,7 +183,7 @@ namespace Engine
         {
             foreach (QuestCompletionItem completionItem in quest.QuestCompletionItems)
             {
-                if(!Inventory.Exists(i => i.Details.ID == completionItem.Details.ID && i.Quantity >= completionItem.Quantity))
+                if(!Inventory.Any(i => i.Details.ID == completionItem.Details.ID && i.Quantity >= completionItem.Quantity))
                 {
                     return false;
                 }

@@ -48,14 +48,43 @@ namespace SuperAdventure
             lblMana.DataBindings.Add("Text", _player, "ManaCurrent");
             _player.PlayerLevelUp += OnLevelUp;
 
+            dgvInventory.RowHeadersVisible = false;
+            dgvInventory.AutoGenerateColumns = false;
+            dgvInventory.DataSource = _player.Inventory;
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "DisplayName"
+            });
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Quantity",
+                DataPropertyName = "Quantity"
+            });
+
+
+            dgvQuests.RowHeadersVisible = false;
+            dgvQuests.AutoGenerateColumns=false;
+            dgvQuests.DataSource = _player.Quests;
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Name"
+            });
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Completed?",
+                DataPropertyName = "IsCompleted"
+            });
+
         }
 
         private void UpdateUI()
         {
-            UpdateInventoryListInUI();
             UpdatePotionListInUI();
             UpdateWeaponListInUI();
-            UpdateQuestListInUI();
         }
 
         private void SuperAdventure_Load(object sender, EventArgs e)
@@ -367,22 +396,22 @@ namespace SuperAdventure
 
         }
 
-        private void UpdateInventoryListInUI()
+        /*private void UpdateInventoryListInUI()
         {
-            dgvInentory.RowHeadersVisible = false;
-            dgvInentory.ColumnCount = 2;
-            dgvInentory.Columns[0].Name = "Name";
-            dgvInentory.Columns[0].Width = 197;
-            dgvInentory.Columns[1].Name = "Quantity";
-            dgvInentory.Rows.Clear();
+            dgvInventory.RowHeadersVisible = false;
+            dgvInventory.ColumnCount = 2;
+            dgvInventory.Columns[0].Name = "Name";
+            dgvInventory.Columns[0].Width = 197;
+            dgvInventory.Columns[1].Name = "Quantity";
+            dgvInventory.Rows.Clear();
             foreach (InventoryItem inventoryItem in _player.Inventory)
             {
                 if (inventoryItem.Quantity > 0)
                 {
-                    dgvInentory.Rows.Add(new[] { inventoryItem.Details.Name, inventoryItem.Quantity.ToString() });
+                    dgvInventory.Rows.Add(new[] { inventoryItem.Details.Name, inventoryItem.Quantity.ToString() });
                 }
             }
-        }
+        } */
         private void UpdateQuestListInUI()
         {
             dgvQuests.RowHeadersVisible = false;

@@ -47,11 +47,11 @@
             this.btnWest = new System.Windows.Forms.Button();
             this.rtbLocation = new System.Windows.Forms.RichTextBox();
             this.rtbMessages = new System.Windows.Forms.RichTextBox();
-            this.dgvInentory = new System.Windows.Forms.DataGridView();
+            this.dgvInventory = new System.Windows.Forms.DataGridView();
             this.dgvQuests = new System.Windows.Forms.DataGridView();
             this.label5 = new System.Windows.Forms.Label();
             this.lblMana = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInentory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
             this.SuspendLayout();
             // 
@@ -232,23 +232,23 @@
             this.rtbMessages.Text = "";
             this.rtbMessages.TextChanged += new System.EventHandler(this.rtbMessages_TextChanged);
             // 
-            // dgvInentory
+            // dgvInventory
             // 
-            this.dgvInentory.AllowUserToAddRows = false;
-            this.dgvInentory.AllowUserToDeleteRows = false;
-            this.dgvInentory.AllowUserToResizeRows = false;
-            this.dgvInentory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvInentory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvInentory.Enabled = false;
-            this.dgvInentory.Location = new System.Drawing.Point(16, 130);
-            this.dgvInentory.MultiSelect = false;
-            this.dgvInentory.Name = "dgvInentory";
-            this.dgvInentory.ReadOnly = true;
-            this.dgvInentory.RowHeadersVisible = false;
-            this.dgvInentory.RowHeadersWidth = 62;
-            this.dgvInentory.RowTemplate.Height = 28;
-            this.dgvInentory.Size = new System.Drawing.Size(624, 309);
-            this.dgvInentory.TabIndex = 19;
+            this.dgvInventory.AllowUserToAddRows = false;
+            this.dgvInventory.AllowUserToDeleteRows = false;
+            this.dgvInventory.AllowUserToResizeRows = false;
+            this.dgvInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvInventory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvInventory.Enabled = false;
+            this.dgvInventory.Location = new System.Drawing.Point(16, 130);
+            this.dgvInventory.MultiSelect = false;
+            this.dgvInventory.Name = "dgvInventory";
+            this.dgvInventory.ReadOnly = true;
+            this.dgvInventory.RowHeadersVisible = false;
+            this.dgvInventory.RowHeadersWidth = 62;
+            this.dgvInventory.RowTemplate.Height = 28;
+            this.dgvInventory.Size = new System.Drawing.Size(624, 309);
+            this.dgvInventory.TabIndex = 19;
             // 
             // dgvQuests
             // 
@@ -294,7 +294,7 @@
             this.Controls.Add(this.lblMana);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dgvQuests);
-            this.Controls.Add(this.dgvInentory);
+            this.Controls.Add(this.dgvInventory);
             this.Controls.Add(this.rtbMessages);
             this.Controls.Add(this.rtbLocation);
             this.Controls.Add(this.btnWest);
@@ -318,7 +318,7 @@
             this.Text = "MyGame";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SuperAdventure_FormClosing);
             this.Load += new System.EventHandler(this.SuperAdventure_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInentory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -346,7 +346,7 @@
         private System.Windows.Forms.Button btnWest;
         private System.Windows.Forms.RichTextBox rtbLocation;
         private System.Windows.Forms.RichTextBox rtbMessages;
-        private System.Windows.Forms.DataGridView dgvInentory;
+        private System.Windows.Forms.DataGridView dgvInventory;
         private System.Windows.Forms.DataGridView dgvQuests;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblMana;
