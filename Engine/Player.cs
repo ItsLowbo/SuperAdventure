@@ -14,11 +14,11 @@ namespace Engine
      
 
         public int Gold {  get; set; }
-        public int ExperiencePoints { get; set; }
-        public int Level { get; set; }
-        public int ExpForNextLevel { get; set; }
+        public int ExperiencePoints { get; private set; }
+        public int Level { get; private set; }
+        public int ExpForNextLevel { get; private set; }
 
-        public int ManaMax { get; set; }
+        public int ManaMax { get; private set; }
 
         public int ManaCurrent { get; set; }
 
